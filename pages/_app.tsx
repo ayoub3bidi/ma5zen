@@ -1,10 +1,11 @@
-import '../styles/globals.scss'
-import type { AppProps } from 'next/app'
-import { SessionProvider } from 'next-auth/react'
+import { ColorScheme, ColorSchemeProvider, MantineProvider } from '@mantine/core';
 import { NextComponentType } from 'next';
-import AuthGuard from '../components/AuthGuard';
-import { MantineProvider, ColorScheme, ColorSchemeProvider } from '@mantine/core';
+import { SessionProvider } from 'next-auth/react';
+import type { AppProps } from 'next/app';
 import { useState } from 'react';
+import AuthGuard from '../components/AuthGuard';
+import PageLayout from '../components/PageLayout';
+import '../styles/globals.scss';
 
 export type CustomAppProps = AppProps & {
   Component: NextComponentType & { requireAuth?: boolean };
@@ -26,7 +27,9 @@ function MyApp({ Component, pageProps : {session, ...pageProps} }: CustomAppProp
         >
           { Component.requireAuth ?
             (<AuthGuard>
-              <Component {...pageProps} />
+              <PageLayout>
+                <Component {...pageProps} />
+              </PageLayout>
             </AuthGuard>)
             :
             (<Component {...pageProps} />)
