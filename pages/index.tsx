@@ -1,9 +1,9 @@
-import type { NextPage } from 'next';
-import Head from 'next/head'
-import { useSession, signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react';
+import Head from 'next/head';
 import Link from 'next/link';
+import { CustomNextPage } from '../types/CustomNextPage';
 
-export default function Home() {
+const Home : CustomNextPage  = () => {
   const { data } = useSession()
   return (
     <>
@@ -15,7 +15,15 @@ export default function Home() {
       </Head>
       <main>
         {data?.user?.name || <Link href="/auth/signin">Sign in</Link>} {""}
-        {data?.user && <button onClick={() => signOut()}>Sign out</button>}</main>
+        {data?.user && <button onClick={() => signOut()}>Sign out</button>}
+        {data?.user && <Link href='/categories'>
+          <span style={{marginLeft: '1rem'}}>Categories</span>
+        </Link>}
+      </main>
     </>
   )
 }
+
+Home.requireAuth = true;
+
+export default Home;
