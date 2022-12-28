@@ -1,7 +1,6 @@
+import { AppShell, Burger, Header, MediaQuery, Text, useMantineTheme } from '@mantine/core'
 import React from 'react'
-import { AppShell, Header, Text, MediaQuery, Burger, useMantineTheme } from '@mantine/core'
-import { useSession } from 'next-auth/react'
-import Nav from './nav'
+import Nav from './Nav'
 
 const PageLayout = ({children} : any) => {
 
@@ -12,7 +11,7 @@ const PageLayout = ({children} : any) => {
     <AppShell
         styles={{ main: {backgroundColor: theme.colorScheme === 'dark' ? theme.colors.dark[8] : theme.colors.gray[0], }}}
         navbarOffsetBreakpoint='sm'
-        navbar={<Nav opened={opened} hiddenBreakpoint="sm" />}
+        navbar={<Nav setOpened={setOpened} opened={opened} hiddenBreakpoint="sm" />}
         header={
             <Header height={70} p='md'>
                 <div style={{ display: 'flex', alignItems: 'center', height: '100%' }}>

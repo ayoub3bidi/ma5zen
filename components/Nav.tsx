@@ -23,6 +23,8 @@ import { BiCategory } from 'react-icons/bi';
 import { BsBox } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 import { TbClipboardList } from 'react-icons/tb';
+import { useSession } from 'next-auth/react';
+import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 const Brand = () => {
     const {colorScheme, toggleColorScheme} = useMantineColorScheme();
@@ -61,29 +63,33 @@ interface MainLinksProps {
     label: string;
     color: string;
     pageLink: string;
+    setOpened: (opened: boolean) => void;
 }
 
-const MainLinks = ({icon, label, color, pageLink}: MainLinksProps) => {
+const MainLinks = ({icon, label, color, pageLink, setOpened }: MainLinksProps) => {
     const {pathname} = useRouter();
+
     return (<Link href={pageLink} passHref>
-        <UnstyledButton sx={(theme) => ({
-            display: 'block',
-            width: '100%',
-            padding: theme.spacing.xs,
-            borderRadius: theme.radius.sm,
-            color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.black,
-            backgroundColor:
-            pathname === pageLink
-                ? theme.colorScheme === 'dark'
-                    ? theme.colors.dark[6]
-                    : theme.colors.gray[0]
-                : 'transparent',
-            "& hover": {
+        <UnstyledButton 
+            onClick={() => setOpened(false)}
+            sx={(theme) => ({
+                display: 'block',
+                width: '100%',
+                padding: theme.spacing.xs,
+                borderRadius: theme.radius.sm,
+                color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.black,
                 backgroundColor:
-                    theme.colorScheme === 'dark'
+                pathname === pageLink
+                    ? theme.colorScheme === 'dark'
                         ? theme.colors.dark[6]
-                        : theme.colors.gray[0],
-            }
+                        : theme.colors.gray[0]
+                    : 'transparent',
+                "& hover": {
+                    backgroundColor:
+                        theme.colorScheme === 'dark'
+                            ? theme.colors.dark[6]
+                            : theme.colors.gray[0],
+                }
         })}>
             <Group>
                 <ThemeIcon color={color} variant={'light'}>{icon}</ThemeIcon>
@@ -100,34 +106,102 @@ const data: MainLinksProps[] = [
         color: 'blue',
         label: 'Home',
         pageLink: '/',
+        setOpened: () => {},
     },
     {
         icon: <BiCategory size={18}/>,
         color: 'teal',
         label: 'Categories',
         pageLink: '/categories',
+        setOpened: () => {},
     },
     {
         icon: <BsBox size={16}/>,
         color: 'violet',
         label: 'Inventory',
         pageLink: '/inventory',
+        setOpened: () => {},
     },
     {
         icon: <TbClipboardList size={20}/>,
         color: 'grape',
         label: 'Products',
         pageLink: '/products',
+        setOpened: () => {},
     },
     {
         icon: <FiSettings size={16}/>,
         color: 'orange',
         label: 'Settings',
         pageLink: '/settings',
+        setOpened: () => {},
     },
 ]
 
-const Nav = ({opened, hiddenBreakpoint} : {opened: boolean; hiddenBreakpoint: MantineNumberSize}) => {
+const getWordInitials = (word: string) : string => {
+    const bits = word.trim().split(' ');
+    return bits.map((bit) => bit.charAt(0)).join('').toUpperCase();
+}
+
+const User = () => {
+    const theme = useMantineTheme();
+    const { data: session } = useSession();
+    const { pathname } = useRouter();
+    return <Link passHref href={pathname === '/settings' ? "/" : "/settings"}>
+        <Box sx={{paddingTop: theme.spacing.sm, borderTop: `1px solid ${
+            theme.colorScheme === 'dark'
+                ? theme.colors.dark[4]
+                : theme.colors.gray[2]
+        }`}}>
+            <UnstyledButton
+                sx={{
+                    display: 'block',
+                    width: '100%',
+                    padding: theme.spacing.xs,
+                    borderRadius: theme.radius.sm,
+                    color:
+                        theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.colors.black,
+                        "& hover": {
+                            backgroundColor:
+                                theme.colorScheme === 'dark'
+                                    ? theme.colors.dark[6]
+                                    : theme.colors.gray[0],
+                        },
+                }}>
+                <Group>
+                    {/* IMAGE */}
+                    <Avatar
+                        src={session?.user?.image}
+                        radius='xl'
+                        color='blue'
+                        variant='light'
+                    >
+                        {`${getWordInitials(session?.user?.name ?? "")}`}
+                    </Avatar>
+                    {/* NAME AND EMAIL */}
+                    <Box sx={{flex: 1}}>
+                        <Text size='sm' weight={500}>{session?.user?.name}</Text>
+                        <Text color='dimmed' size='xs'>{session?.user?.email}</Text>
+                    </Box>
+                    { pathname === '/settings'
+                        ? (<MdKeyboardArrowLeft size={18}/>)
+                        : ( <MdKeyboardArrowRight size={18}/>)
+                    }
+                </Group>
+            </UnstyledButton>
+        </Box>
+    </Link>
+}
+
+const Nav = ({
+    setOpened,
+    opened,
+    hiddenBreakpoint
+} : {
+    setOpened: (opened: boolean) => void;
+    opened: boolean;
+    hiddenBreakpoint: MantineNumberSize;
+}) => {
   return (
     <Navbar
         p='xs'
@@ -140,11 +214,11 @@ const Nav = ({opened, hiddenBreakpoint} : {opened: boolean; hiddenBreakpoint: Ma
         </Navbar.Section>
         <Navbar.Section grow mt='md'>
             {data.map((item, index) => (
-                <MainLinks key={index} {...item}/>
+                <MainLinks key={index} {...item} setOpened={setOpened} />
             ))}
         </Navbar.Section>
         <Navbar.Section>
-            Avatar
+            <User/>
         </Navbar.Section>
     </Navbar>
   )
