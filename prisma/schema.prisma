@@ -76,7 +76,7 @@ model Date {
 model Product {
   id          String   @id @default(cuid())
   name        String
-  price       Int
+  price       Float
   description String?
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId  String
