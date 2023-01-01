@@ -13,6 +13,7 @@ import {
   Text,
   LoadingOverlay,
   Accordion,
+  Skeleton,
 } from "@mantine/core"
 
 import { useForm, zodResolver } from "@mantine/form"
@@ -24,6 +25,8 @@ import { GetCategory } from '../types/getCategories'
 
 const Categories:CustomNextPage = () => {
   const { data: categories, isLoading: categoriesLoading } = useGetCategories();
+  // ACCORDION VALUE/STATE
+  const [accordionValue, setAccordionValue] = useState<string | null>(null);
   // SEARCH VALUE & DATA
   const [selectData, setSelectData] = useState<GetCategory['name'][]>([]);
   const [selectValue, setSelectValue] = useState<GetCategory['name'] | null>(null);
@@ -37,6 +40,15 @@ const Categories:CustomNextPage = () => {
     }
     setFilteredValue(categories);
   }, [categories]);
+
+  // FILTER THE DATA BY THE SELECTED VALUE
+  useEffect(() => {
+    if (selectValue) {
+      setFilteredValue(categories?.filter((category) => category.name === selectValue));
+    } else {
+      setFilteredValue(categories);
+    }
+  }, [selectValue, categories]);
 
   return (
     <main>
@@ -74,6 +86,83 @@ const Categories:CustomNextPage = () => {
           </Group>
         </Box>)
       }
+      {/* ACCORDION FOR THE DATA */}
+      <Skeleton
+        mb='3rem'
+        visible={categoriesLoading ?? false}
+        style={{ minHeight: "80px" }}
+        animate
+      >
+        <Accordion value={accordionValue} onChange={setAccordionValue} transitionDuration={500}>
+          {filteredValue?.map((category: GetCategory, index) => (
+            <Accordion.Item
+              key={category.id}
+              value={category.name}
+              sx={{overflowX: 'auto'}}
+            >
+              <Accordion.Control>{category.name}</Accordion.Control>
+              <Accordion.Panel sx={{width: 'max-content', minWidth: '100%'}}>
+                <Table verticalSpacing='md' horizontalSpacing='md'>
+                  <thead>
+                    <tr>
+                      <th style={{ paddingLeft: "0" }}>Name</th>
+                      <th style={{ paddingLeft: "0" }}>Price</th>
+                      <th style={{ paddingLeft: "0" }}>Id</th>
+                      <th style={{ paddingLeft: "0" }}>Last Updated</th>
+                      <th style={{ paddingLeft: "0" }}>Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {category?.products?.map(product => (
+                      <tr key={product.name}>
+                        {/* NAME */}
+                        <td>
+                          <div style={{ paddingRight: "1rem" }}>
+                            {product.name}
+                          </div>
+                        </td>
+                        {/* PRICE */}
+                        <td>
+                          <div style={{ paddingRight: "1rem" }}>
+                            {product.price}
+                          </div>
+                        </td>
+                        {/* ID */}
+                        <td>
+                          <div style={{ paddingRight: "1rem" }}>
+                            {product.id}
+                          </div>
+                        </td>
+                        {/* ID */}
+                        <td>
+                          <div style={{ paddingRight: "1rem" }}>
+                            {product.lastUpdate.toString()}
+                          </div>
+                        </td>
+                        {/* LATEST DATE STOCK */}
+                        <td>
+                          <div style={{ paddingRight: "1rem" }}>
+                            {product?.date[0]?.stock ?? '0'}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+                {/* BUTTONS GROUP */}
+                <Group>
+                  <Button mt='1.5rem' color='blue'>Change details</Button>
+                  <Button mt='1.5rem' color='red'>Delete</Button>
+                </Group>
+                {/* ACTIONS FOR CATEGORIES */}
+                <Box>
+                  <Button color='blue' variant='outline'>Create Category</Button>
+                </Box>
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
+        </Accordion>
+      </Skeleton>
     </main>
   )
 }
