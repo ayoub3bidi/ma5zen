@@ -20,7 +20,7 @@ import { useForm, zodResolver } from "@mantine/form"
 import { BiCategory } from 'react-icons/bi'
 import { FiSearch } from 'react-icons/fi'
 import { MdWarningAmber } from 'react-icons/md'
-import { useGetCategories } from '../queries/CategoryQueries'
+import { useGetCategories, usePostCategory } from '../queries/CategoryQueries'
 import { GetCategory } from '../types/getCategories'
 
 const Categories:CustomNextPage = () => {
@@ -32,6 +32,8 @@ const Categories:CustomNextPage = () => {
   const [selectValue, setSelectValue] = useState<GetCategory['name'] | null>(null);
   // FILTERED VALUES
   const [filteredValue, setFilteredValue] = useState<GetCategory[]>();
+  // MODAL STATE
+  const [createModal, setCreateModal] = useState<boolean>(false);
   // SET SELECT DATA FOR SEARCH
   useEffect(() => {
     setSelectData([]);
@@ -154,15 +156,40 @@ const Categories:CustomNextPage = () => {
                   <Button mt='1.5rem' color='blue'>Change details</Button>
                   <Button mt='1.5rem' color='red'>Delete</Button>
                 </Group>
-                {/* ACTIONS FOR CATEGORIES */}
-                <Box>
-                  <Button color='blue' variant='outline'>Create Category</Button>
-                </Box>
               </Accordion.Panel>
             </Accordion.Item>
           ))}
         </Accordion>
       </Skeleton>
+      {/* ACTIONS FOR CATEGORIES */}
+      <Box>
+        <Button
+          color='blue'
+          variant='outline'
+          onClick={() => setCreateModal(true)}
+        >Create Category</Button>
+      </Box>
+      {/* MODALS  */}
+      {/* CREATE CATEGORY */}
+      <Modal
+        centered
+        opened={createModal}
+        onClose={() => setCreateModal(false)}
+        title='Create Category'
+      >
+        <form>
+          <TextInput
+            placeholder='Category name'
+            label='Category name'
+            withAsterisk
+            mb='1rem'
+          />
+          <Group noWrap={false}>
+            <Button type='submit'>Create</Button>
+            <Button color='red' onClick={() => setCreateModal(false)}>Exit</Button>
+          </Group>
+        </form>
+      </Modal>
     </main>
   )
 }
