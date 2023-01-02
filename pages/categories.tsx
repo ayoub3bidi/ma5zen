@@ -22,6 +22,8 @@ import { FiSearch } from 'react-icons/fi'
 import { MdWarningAmber } from 'react-icons/md'
 import { useGetCategories, usePostCategory } from '../queries/CategoryQueries'
 import { GetCategory } from '../types/getCategories'
+import { PostCategorySchema } from '../types/postCategory'
+import { queryClient } from './_app'
 
 const Categories:CustomNextPage = () => {
   const { data: categories, isLoading: categoriesLoading } = useGetCategories();
@@ -51,6 +53,16 @@ const Categories:CustomNextPage = () => {
       setFilteredValue(categories);
     }
   }, [selectValue, categories]);
+
+  // VALIDATE POST CATEGORY FORM
+  const createCategoryForm = useForm({
+    validate:zodResolver(PostCategorySchema),
+    initialValues: {
+      name : '',
+    }
+  });
+
+  const {mutate: postCategory, isLoading:postCategoryLoading} = usePostCategory();
 
   return (
     <main>
@@ -177,12 +189,24 @@ const Categories:CustomNextPage = () => {
         onClose={() => setCreateModal(false)}
         title='Create Category'
       >
-        <form>
+        <form onSubmit={createCategoryForm.onSubmit((values) => {
+          postCategory(values, {
+            onSuccess() {
+                setCreateModal(false);
+                queryClient.refetchQueries(['categories']);
+            },
+          });
+        })}>
+          <LoadingOverlay 
+            transitionDuration={500}
+            visible={postCategoryLoading ?? false}
+          />
           <TextInput
             placeholder='Category name'
             label='Category name'
             withAsterisk
             mb='1rem'
+            {...createCategoryForm.getInputProps('name')}
           />
           <Group noWrap={false}>
             <Button type='submit'>Create</Button>
