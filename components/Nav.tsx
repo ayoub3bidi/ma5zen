@@ -2,6 +2,7 @@ import {
     MantineNumberSize,
     ActionIcon,
     Box,
+    Button,
     Navbar,
     ScrollArea,
     useMantineColorScheme,
@@ -23,7 +24,7 @@ import { BiCategory } from 'react-icons/bi';
 import { BsBox } from 'react-icons/bs';
 import { FiSettings } from 'react-icons/fi';
 import { TbClipboardList } from 'react-icons/tb';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md';
 
 const Brand = () => {
@@ -189,6 +190,15 @@ const User = () => {
                     }
                 </Group>
             </UnstyledButton>
+            {session?.user &&
+                <Box>
+                    <Button
+                    color='blue'
+                    variant='outline'
+                    onClick={() => signOut()}
+                    >Sign out</Button>
+                </Box>
+            }
         </Box>
     </Link>
 }

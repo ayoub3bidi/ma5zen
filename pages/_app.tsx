@@ -39,7 +39,7 @@ function MyApp({ Component, pageProps : {session, ...pageProps} }: CustomAppProp
               :
               (<Component {...pageProps} />)
             }
-            <ReactQueryDevtools initialIsOpen={false} />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
           </SessionProvider>
         </MantineProvider>
       </ColorSchemeProvider>
