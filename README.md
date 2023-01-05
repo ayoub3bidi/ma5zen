@@ -2,7 +2,6 @@
 A full-stack inventory web app.  
 
 ## Setup
-* Go to [railway.app](https://railway.app), then `new project` to create a new PostgreSQL database. 
 * You need to have docker desktop app to be installed on your machine, then create a PostgreSQL container and you will find a `connection link`.   
 * Change the `.env.example` to `.env`, then replace `SECRET` and `NEXTAUTH_SECRET` with a string you choose on your own.  
 * For the `DATABASE_URL` you need to put the connection link from the previous step.  
