@@ -4,7 +4,7 @@ import { type GetCategory } from "../types/getCategories";
 import { PostCategory } from "../types/postCategory";
 
 const getCategories = async (): Promise<GetCategory[]> => {
-    const { data } = await axios.get("/categories");
+    const { data } = await axios.get("/categories ");
     return data; 
 };
 

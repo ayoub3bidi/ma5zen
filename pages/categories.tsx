@@ -19,7 +19,6 @@ import {
 import { useForm, zodResolver } from "@mantine/form"
 import { BiCategory } from 'react-icons/bi'
 import { FiSearch } from 'react-icons/fi'
-import { MdWarningAmber } from 'react-icons/md'
 import { useGetCategories, usePostCategory } from '../queries/CategoryQueries'
 import { GetCategory } from '../types/getCategories'
 import { PostCategorySchema } from '../types/postCategory'
@@ -66,6 +65,7 @@ const Categories:CustomNextPage = () => {
 
   return (
     <main>
+      {/* TITLE */}
       <Group align='center' mb='3rem'>
         <ThemeIcon variant='light' color='green' size='md'>
           <BiCategory size={25} />
@@ -74,6 +74,7 @@ const Categories:CustomNextPage = () => {
           Your Categories
         </Title>
       </Group>
+      {/* SELECT COMPONENT / SEARCH */}
       <Select
         data={selectData}
         value={selectValue}

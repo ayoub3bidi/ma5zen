@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
     const session = await unstable_getServerSession(req, res, authOptions);
+    const { data } = useSession();
     if (!session) {
         res.status(401).json({ message: "Unauthorized" });
     }
@@ -21,8 +22,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             const category = await prisma.category.create({
                 data: {
                     name,
-                    userId: "987"
-                    // userId: session?.user?.id,
+                    userId: data?.user?.id as any,
                 },
             });
             res.status(201).json(category);

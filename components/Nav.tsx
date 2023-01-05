@@ -191,13 +191,15 @@ const User = () => {
                 </Group>
             </UnstyledButton>
             {session?.user &&
-                <Box>
-                    <Button
-                    color='blue'
-                    variant='outline'
-                    onClick={() => signOut()}
-                    >Sign out</Button>
-                </Box>
+                <Group position='center'>
+                    <Box>
+                        <Button
+                        color='blue'
+                        variant='outline'
+                        onClick={() => signOut()}
+                        >Sign out</Button>
+                    </Box>
+                </Group>
             }
         </Box>
     </Link>
